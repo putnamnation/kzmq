@@ -99,6 +99,14 @@ internal class RequestSocketHandler : SocketHandler {
         lastSentPeer.value = mailbox
     }
 
+    override fun trySend(message: Message): Unit? {
+        if (lastSentPeer.value != null) return null
+        val toSend = message.copy().apply { pushPrefixAddress() }
+        val maybeMailbox = outgoingMailboxes.trySendToFirstAvailable(toSend)
+        lastSentPeer.value = maybeMailbox
+        return maybeMailbox?.let {}
+    }
+
     override suspend fun receive(): Message {
         awaitLastSentPeer { it != null }
         while (true) {
@@ -115,6 +123,31 @@ internal class RequestSocketHandler : SocketHandler {
             logger.v { "Received reply $message from $mailbox" }
             lastSentPeer.value = null
             return message
+        }
+    }
+
+    override fun tryReceive(): Message? {
+        if (lastSentPeer.value == null) return null
+        while (true) {
+            val maybeMailboxAndMessage = incomingMailboxes.tryReceiveFromFirst()
+
+            if (maybeMailboxAndMessage != null) {
+                val (mailbox, message) = maybeMailboxAndMessage
+
+                message.popPrefixAddress()
+
+                // Should we "discard" messages in another coroutine in `handle()`?
+                if (mailbox != lastSentPeer.value) {
+                    logger.w { "Ignoring reply $message from $mailbox" }
+                    continue
+                }
+
+                logger.v { "Received reply $message from $mailbox" }
+                lastSentPeer.value = null
+                return message
+            } else {
+                return null
+            }
         }
     }
 }

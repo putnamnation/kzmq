@@ -94,8 +94,17 @@ internal class DealerSocketHandler : SocketHandler {
         outgoingMailboxes.sendToFirstAvailable(message)
     }
 
+    override fun trySend(message: Message): Unit? {
+        return outgoingMailboxes.trySendToFirstAvailable(message)?.let {}
+    }
+
     override suspend fun receive(): Message {
         val (_, message) = incomingMailboxes.receiveFromFirst()
         return message
+    }
+
+    override fun tryReceive(): Message? {
+        val maybeMailboxAndMessage = incomingMailboxes.tryReceiveFromFirst()
+        return maybeMailboxAndMessage?.let { (_, message) -> message }
     }
 }

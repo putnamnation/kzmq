@@ -16,8 +16,8 @@ class SimpleTest {
         val ctx2 = Context(JeroMQ)
 
         val address = "tcp://localhost:9000"
-        val push = ctx1.createPush().apply { bind(address) }
-        val pull = ctx2.createPull().apply { connect(address) }
+        val push = ctx1.createPush().apply { connect(address) }
+        val pull = ctx2.createPull().apply { bind(address) }
 
         val messageContent = "Hello"
         push.send { writeFrame { writeString(messageContent) } }

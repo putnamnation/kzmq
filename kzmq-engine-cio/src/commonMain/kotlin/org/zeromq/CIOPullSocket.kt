@@ -73,4 +73,9 @@ internal class PullSocketHandler : SocketHandler {
         val (_, message) = mailboxes.receiveFromFirst()
         return message
     }
+
+    override fun tryReceive(): Message? {
+        val maybeMailboxAndMessage = mailboxes.tryReceiveFromFirst()
+        return maybeMailboxAndMessage?.let { (_, message) -> message }
+    }
 }

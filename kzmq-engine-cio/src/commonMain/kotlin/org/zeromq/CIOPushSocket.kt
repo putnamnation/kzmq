@@ -75,4 +75,8 @@ internal class PushSocketHandler : SocketHandler {
     override suspend fun send(message: Message) {
         mailboxes.sendToFirstAvailable(message)
     }
+
+    override fun trySend(message: Message): Unit? {
+        return mailboxes.trySendToFirstAvailable(message)?.let {}
+    }
 }
