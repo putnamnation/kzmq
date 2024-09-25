@@ -6,8 +6,9 @@
 package org.zeromq
 
 import kotlinx.coroutines.*
-import org.zeromq.util.*
 import kotlin.coroutines.*
+
+import org.zeromq.util.*
 
 @OptIn(InternalAPI::class)
 internal actual fun addToLoader() {

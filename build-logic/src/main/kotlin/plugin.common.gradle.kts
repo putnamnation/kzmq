@@ -81,7 +81,7 @@ tasks {
 
     withType<KotlinNativeCompile> {
         onlyIf {
-            this.target !in listOf("linux_arm64", "mingw_x64")
+            this.target !in listOf("mingw_x64")
         }
     }
 }
