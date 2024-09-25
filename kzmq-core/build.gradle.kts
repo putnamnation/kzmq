@@ -11,11 +11,13 @@ plugins {
     id("plugin.atomicfu")
     id("plugin.kotest")
     id("plugin.mocks")
+    id("maven-publish")
 }
 
 kotlin {
     jvmTargets()
     jsTargets()
+    wasmTargets()
     nativeTargets { it.isSupportedByCIO || it.isSupportedByLibzmq }
 
     sourceSets {

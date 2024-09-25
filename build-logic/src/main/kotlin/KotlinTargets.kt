@@ -3,8 +3,11 @@
  * Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 import org.jetbrains.kotlin.konan.target.*
 import org.jetbrains.kotlin.konan.target.KonanTarget.*
 
@@ -20,8 +23,14 @@ fun KotlinMultiplatformExtension.jsTargets() {
     }
 }
 
+fun KotlinMultiplatformExtension.wasmTargets() {
+    wasmJs {
+        binaries.library()
+    }
+}
+
+
 private val ignoredTargets = setOf(
-    LINUX_ARM64,
     MINGW_X64,
     WATCHOS_ARM32, // not supported by Mokkery
 )
@@ -86,14 +95,13 @@ val KonanTarget.buildHost: Family
 
         else -> error("Target $this not supported")
     }
-
-val KonanTarget.isSupportedByCIO get() = this.isSupportedByKtorNetwork && this !in cioIgnoredTargets
-val KonanTarget.isSupportedByLibzmq get() = this in targetsSupportedByLibzmq
-val KonanTarget.isSupportedByKtorNetwork get() = this in targetsSupportedByKtorNetwork
-
-private val cioIgnoredTargets = setOf(
+private val libZmqIgnoredTargets = setOf(
     LINUX_ARM64, // Not supported by Kermit
 )
+
+val KonanTarget.isSupportedByCIO get() = this.isSupportedByKtorNetwork
+val KonanTarget.isSupportedByLibzmq get() = this in targetsSupportedByLibzmq && this !in libZmqIgnoredTargets
+val KonanTarget.isSupportedByKtorNetwork get() = this in targetsSupportedByKtorNetwork
 
 private val targetsSupportedByLibzmq = setOf(
     LINUX_ARM64,

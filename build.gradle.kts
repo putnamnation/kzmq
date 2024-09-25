@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.dokka)
     alias(libs.plugins.kotlinx.kover)
+    id("maven-publish")
+
 }
 
 val projectVersion: String = libs.versions.project.get()
@@ -22,5 +24,9 @@ dependencies {
     kover(project(":kzmq-engine-jeromq"))
     kover(project(":kzmq-engine-libzmq"))
     kover(project(":kzmq-engine-zeromqjs"))
-    kover(project(":kzmq-tests"))
+//    kover(project(":kzmq-tests"))
+}
+
+publishing {
+
 }

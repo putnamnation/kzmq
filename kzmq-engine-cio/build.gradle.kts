@@ -7,11 +7,13 @@ plugins {
     id("plugin.library")
     id("plugin.atomicfu")
     id("plugin.kotest")
+    id("maven-publish")
 }
 
 kotlin {
     jvmTargets()
     nativeTargets { it.isSupportedByCIO }
+//    wasmTargets()
 
     sourceSets {
         commonMain {
@@ -29,3 +31,4 @@ kotlin {
         }
     }
 }
+
